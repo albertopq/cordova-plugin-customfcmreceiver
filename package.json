@@ -1,0 +1,8 @@
+{
+  "name": "cordova-plugin-customfcmreceiver",
+  "version": "1.0.0",
+  "description": "A cordova plugin that extends cordova-plugin-firebasex in order to display data messages with custom payloads.",
+  "dependencies": {},
+  "devDependencies": {},
+  "license": "MIT"
+}
