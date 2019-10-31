@@ -64,13 +64,19 @@ public class CustomFCMReceiverPlugin extends CordovaPlugin {
         public boolean onMessageReceived(RemoteMessage remoteMessage){
             Log.d("CustomFCMReceiver", "onMessageReceived");
             boolean isHandled = false;
+            String titleField = getStringResource("custom_fcm_title");
+            String bodyField = getStringResource("custom_fcm_body");
+            String title = null;
+            String body = null;
 
             Map<String, String> data = remoteMessage.getData();
+            if(data.containsKey(titleField)) title = data.get(titleField);
+            if(data.containsKey(bodyField)) body = data.get(bodyField);
 
             if (remoteMessage.getNotification() == null) {
               boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback());
-              if (data != null && showNotification) {
-                sendMessage(remoteMessage, data);
+              if (data != null && showNotification && title != null && body !=null) {
+                sendMessage(remoteMessage, data, title, body);
                 isHandled = true;
               }
 
@@ -80,19 +86,13 @@ public class CustomFCMReceiverPlugin extends CordovaPlugin {
         }
     }
 
-    private void sendMessage(RemoteMessage remoteMessage, Map<String, String> data) {
-      String titleField = getStringResource("custom_fcm_title");
-      String bodyField = getStringResource("custom_fcm_body");
-      String title = null;
-      String body = null;
+    private void sendMessage(RemoteMessage remoteMessage, Map<String, String> data, String title, String body) {
       String channelId = FirebasePlugin.defaultChannelId;
       String icon = defaultSmallIconName;
       Random rand = new Random();
       int n = rand.nextInt(50) + 1;
       String id = Integer.toString(n);
 
-      if(data.containsKey(titleField)) title = data.get(titleField);
-      if(data.containsKey(bodyField)) body = data.get(bodyField);
       Bundle bundle = new Bundle();
       for (String key : data.keySet()) {
           bundle.putString(key, data.get(key));
